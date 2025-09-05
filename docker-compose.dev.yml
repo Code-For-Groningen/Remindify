@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  remindify-backend:
+    build:
+      context: ./remindify-backend
+      dockerfile: Dockerfile
+    container_name: remindify-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - remindify-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  remindify-frontend:
+    build:
+      context: ./remindify-frontend
+      dockerfile: Dockerfile.dev
+    container_name: remindify-frontend-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./remindify-frontend:/app
+      - /app/node_modules
+    networks:
+      - remindify-network
+    depends_on:
+      remindify-backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  remindify-network:
+    driver: bridge
