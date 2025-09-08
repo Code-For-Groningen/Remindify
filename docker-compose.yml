@@ -11,6 +11,8 @@ services:
     environment:
       - NODE_ENV=production
       - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
