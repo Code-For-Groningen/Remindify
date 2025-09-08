@@ -1,39 +1,21 @@
-version: '3.8'
-
 services:
-  remindify-backend:
+  # Main application container with frontend, backend, and nginx
+  app:
     build:
-      context: ./remindify-backend
+      context: .
       dockerfile: Dockerfile
-    container_name: remindify-backend
     ports:
-      - "8080:8080"
+      - "1234:80"
+    volumes:
+      - ./logs:/var/log/supervisor
     environment:
+      - NODE_ENV=production
       - SPRING_PROFILES_ACTIVE=prod
-    networks:
-      - remindify-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  remindify-frontend:
-    build:
-      context: ./remindify-frontend
-      dockerfile: Dockerfile
-    container_name: remindify-frontend
-    ports:
-      - "3000:3000"
-    networks:
-      - remindify-network
-    depends_on:
-      remindify-backend:
-        condition: service_healthy
-    restart: unless-stopped
-
-networks:
-  remindify-network:
-    driver: bridge

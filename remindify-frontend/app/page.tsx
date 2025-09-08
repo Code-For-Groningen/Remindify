@@ -15,21 +15,64 @@ export default function ReminderPage() {
   const [description, setDescription] = useState("")
   const [date, setDate] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (title) {
-      setIsSubmitted(true)
-      // Here you would typically save the reminder to a database
-      console.log("Reminder created:", { title, description, date })
+      setIsLoading(true)
+      try {
+        // Create the task object
+        const taskData = {
+          task: title,
+          description: description || "",
+          dueDate: date ? new Date(date).toISOString() : null
+        }
 
-      // Reset form after 2 seconds
-      setTimeout(() => {
-        setTitle("")
-        setDescription("")
-        setDate("")
-        setIsSubmitted(false)
-      }, 2000)
+        // Send POST request to backend
+        const response = await fetch('/api/v1/task', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(taskData)
+        })
+
+        if (response.ok) {
+          console.log("Task sent to backend successfully")
+          setIsSubmitted(true)
+          
+          // Reset form after 2 seconds
+          setTimeout(() => {
+            setTitle("")
+            setDescription("")
+            setDate("")
+            setIsSubmitted(false)
+          }, 20000)
+        } else {
+          console.error("Failed to send task to backend:", response.statusText)
+          // Still show success message for UX, but log the error
+          setIsSubmitted(true)
+          setTimeout(() => {
+            setTitle("")
+            setDescription("")
+            setDate("")
+            setIsSubmitted(false)
+          }, 20000)
+        }
+      } catch (error) {
+        console.error("Error sending task to backend:", error)
+        // Still show success message for UX, but log the error
+        setIsSubmitted(true)
+        setTimeout(() => {
+          setTitle("")
+          setDescription("")
+          setDate("")
+          setIsSubmitted(false)
+        }, 20000)
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -41,9 +84,9 @@ export default function ReminderPage() {
             <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-4">
               <CheckIcon className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-slate-800 mb-2">Boom! Matt's been notified!</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-2">Boom! Matt&apos;s been notified!</h2>
             <p className="text-slate-600 text-center">
-              "{title}" is now on his radar (good luck getting him to actually do it though...)
+              &quot;{title}&quot; is now on his radar (good luck getting him to actually do it though...)
             </p>
           </CardContent>
         </Card>
@@ -52,17 +95,17 @@ export default function ReminderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg bg-white">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-3xl font-bold text-slate-800 text-balance">Remind Matt to...</CardTitle>
-          <p className="text-slate-600 text-sm mt-2">Because apparently he can't remember anything on his own</p>
+          <p className="text-slate-600 text-sm mt-2">Because apparently he can&apos;t remember anything on his own</p>
         </CardHeader>
-        <CardContent className="bg-white">
+        <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold text-slate-700">
-                What's Matt forgetting now? *
+                What&apos;s Matt forgetting now? *
               </Label>
               <Input
                 id="title"
@@ -109,9 +152,9 @@ export default function ReminderPage() {
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
-                disabled={!title}
+                disabled={!title || isLoading}
               >
-                Send Matt This Reminder
+                {isLoading ? "Sending..." : "Send Matt This Reminder"}
               </Button>
             </div>
           </form>

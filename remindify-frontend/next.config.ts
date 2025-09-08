@@ -6,9 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'development' 
-          ? 'http://remindify-backend:8080/api/:path*'
-          : 'http://remindify-backend:8080/api/:path*',
+        destination: `http://localhost:8080/api/:path*`,
       },
     ];
   },
