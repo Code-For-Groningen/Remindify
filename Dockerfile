@@ -3,9 +3,8 @@ FROM node:18-alpine AS frontend-builder
 
 # Build frontend
 WORKDIR /app/frontend
-COPY remindify-frontend/package*.json ./
-RUN npm ci --only=production
 COPY remindify-frontend/ ./
+RUN npm install
 RUN npm run build
 
 # Java backend stage
