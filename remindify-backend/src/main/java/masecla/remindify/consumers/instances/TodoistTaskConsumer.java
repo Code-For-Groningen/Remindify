@@ -24,15 +24,15 @@ public class TodoistTaskConsumer extends TaskConsumer {
     @Data
     @AllArgsConstructor
     private static class TodoistCreateTaskRequest {
-        public String content;
-        public String description;
+        private String content;
+        private String description;
 
         @JsonProperty("due_string")
-        public String dueString;
+        private String dueString;
 
         @JsonProperty("due_datetime")
-        public String dueDatetime;
-        public int priority;
+        private String dueDatetime;
+        private int priority;
     }
 
     @Value("${todoist.api.token}")
@@ -48,7 +48,7 @@ public class TodoistTaskConsumer extends TaskConsumer {
             task.getDescription() != null ? task.getDescription() : "",
             task.getDueDate() != null ? task.getDueDate() : null,
             task.getDueDate() != null ? task.getDueDate() : null,
-            4
+            1
         );
 
         Jsoup.connect(TODOIST_API_URL + "api/v1/tasks")
