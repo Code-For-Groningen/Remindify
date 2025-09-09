@@ -46,8 +46,8 @@ public class TodoistTaskConsumer extends TaskConsumer {
         TodoistCreateTaskRequest request = new TodoistCreateTaskRequest(
             task.getTask(),
             task.getDescription() != null ? task.getDescription() : "",
-            task.getDueDate() != null ? task.getDueDate().toString() : null,
-            task.getDueDate() != null ? task.getDueDate().toString() : null,
+            task.getDueDate() != null ? task.getDueDate() : null,
+            task.getDueDate() != null ? task.getDueDate() : null,
             4
         );
 
