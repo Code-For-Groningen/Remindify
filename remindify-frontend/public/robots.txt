@@ -1,2 +1,26 @@
+# Allow Facebook and WhatsApp (used by WhatsApp and Messenger)
+User-agent: facebookexternalhit
+Disallow:
+
+User-agent: WhatsApp
+Disallow:
+
+# Allow Slack
+User-agent: Slackbot
+Disallow:
+
+# Allow Discord
+User-agent: Discordbot
+Disallow:
+
+# Allow Twitter/X
+User-agent: Twitterbot
+Disallow:
+
+# Allow LinkedIn
+User-agent: LinkedInBot
+Disallow:
+
+# Block everything else
 User-agent: *
 Disallow: /
