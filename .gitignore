@@ -1,2 +1,2 @@
 .env
-remindify-new.mv.db
+*.db
