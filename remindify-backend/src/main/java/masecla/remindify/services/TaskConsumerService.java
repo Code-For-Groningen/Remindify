@@ -2,6 +2,7 @@ package masecla.remindify.services;
 
 import java.util.Map;
 
+import masecla.remindify.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,15 @@ import masecla.remindify.dto.TaskDto;
 public class TaskConsumerService {
 
     private Map<String, TaskConsumer> availableConsumers;
+    private final TaskRepository taskRepository;
 
     public void registerConsumer(String listType, TaskConsumer consumer) {
         availableConsumers.put(listType, consumer);
     }
 
     public void broadcastTask(TaskDto task){
+        TaskDto persisted = task.getId() == null ? taskRepository.save(task) : task;
+        log.info("Task with id {} has been created.", persisted.getId());
         for (TaskConsumer consumer : availableConsumers.values()) {
             try {
                 consumer.sendTaskToList(task);
