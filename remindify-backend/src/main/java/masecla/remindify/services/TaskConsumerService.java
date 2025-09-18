@@ -17,15 +17,14 @@ import masecla.remindify.dto.TaskDto;
 public class TaskConsumerService {
 
     private Map<String, TaskConsumer> availableConsumers;
-    private final TaskRepository taskRepository;
+    private TaskService taskService;
 
     public void registerConsumer(String listType, TaskConsumer consumer) {
         availableConsumers.put(listType, consumer);
     }
 
     public void broadcastTask(TaskDto task){
-        TaskDto persisted = task.getId() == null ? taskRepository.save(task) : task;
-        log.info("Task with id {} has been created.", persisted.getId());
+        taskService.saveTask(task);
         for (TaskConsumer consumer : availableConsumers.values()) {
             try {
                 consumer.sendTaskToList(task);
