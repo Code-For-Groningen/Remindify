@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>masecla</groupId>
 	<artifactId>remindify</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>remindify</name>
 	<description>Remindify Project</description>
 	<url />
