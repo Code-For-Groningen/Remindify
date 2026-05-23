@@ -27,8 +27,22 @@ echo "$NEW_VERSION" > "$VERSION_FILE"
 # Update package.json
 sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$NEW_VERSION\"/" "$PACKAGE_JSON"
 
-# Update pom.xml
-sed -i "s/<version>[^<]*<\/version>/<version>$NEW_VERSION<\/version>/" "$POM_XML"
+# Update pom.xml (only main project version, not dependencies)
+python3 << PYTHON_EOF
+import re
+new_version = "$NEW_VERSION"
+pom_path = "$POM_XML"
+
+with open(pom_path, "r") as f:
+    content = f.read()
+
+# Match project version: <artifactId>remindify</artifactId> followed by <version>X.Y.Z</version>
+pattern = r'(<artifactId>remindify</artifactId>\s*<version>)[^<]*(</version>)'
+content = re.sub(pattern, lambda m: m.group(1) + new_version + m.group(2), content)
+
+with open(pom_path, "w") as f:
+    f.write(content)
+PYTHON_EOF
 
 # Commit changes
 git add "$VERSION_FILE" "$PACKAGE_JSON" "$POM_XML"
