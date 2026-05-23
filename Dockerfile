@@ -1,5 +1,5 @@
 # Multi-stage Docker build for running both frontend and backend
-FROM node:18-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 
 # Build frontend
 WORKDIR /app/frontend
@@ -8,7 +8,7 @@ RUN npm install
 RUN npm run build
 
 # Java backend stage
-FROM maven:3.9.9-eclipse-temurin-17-alpine AS backend-builder
+FROM maven:3.9-eclipse-temurin-21-alpine AS backend-builder
 
 # Build backend
 WORKDIR /app/backend
@@ -20,7 +20,7 @@ RUN mvn clean package -DskipTests
 FROM nginx:alpine
 
 # Install Java Runtime, Node.js, supervisor, and curl for health checks
-RUN apk add --no-cache openjdk17-jre nodejs npm supervisor curl
+RUN apk add --no-cache openjdk21-jre nodejs npm supervisor curl
 
 # Create app directories and data directory for H2 database
 RUN mkdir -p /app/frontend /app/backend /app/backend/data /var/log/supervisor
