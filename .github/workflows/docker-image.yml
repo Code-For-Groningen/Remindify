@@ -23,5 +23,7 @@ jobs:
     - name: Build the Docker image
       run: |
           docker build . --file Dockerfile --tag ghcr.io/code-for-groningen/remindify:latest
+          docker build . --file Dockerfile --tag ghcr.io/code-for-groningen/remindify:${{ github.sha }}
           docker push ghcr.io/code-for-groningen/remindify:latest
+          docker push ghcr.io/code-for-groningen/remindify:${{ github.sha }}
       
