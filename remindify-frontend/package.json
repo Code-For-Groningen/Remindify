@@ -1,6 +1,6 @@
 {
   "name": "remindify",
-  "version": "0.1.0",
+  "version": "0.1.0", // synced with VERSION file at project root
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --hostname 0.0.0.0",
